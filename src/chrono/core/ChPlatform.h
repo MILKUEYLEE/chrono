@@ -17,7 +17,12 @@
 
 // Functionality for API import/export symbols, in a platform independent way.
 // When building the DLL, use the ChApiEXPORT macro. When using the DLL, use the ChApiIMPORT macro.
-#if ((defined _WIN32) || (defined(__MINGW32__) || defined(__CYGWIN__))) && !defined(CH_STATIC)
+// CH_EXTERNAL_API lets an embedding build system decide the symbol export, e.g. Chrono compiled as
+// an Unreal Engine module with CH_EXTERNAL_API=<MODULE>_API (export / import / nothing).
+#if defined(CH_EXTERNAL_API)
+    #define ChApiEXPORT CH_EXTERNAL_API
+    #define ChApiIMPORT CH_EXTERNAL_API
+#elif ((defined _WIN32) || (defined(__MINGW32__) || defined(__CYGWIN__))) && !defined(CH_STATIC)
     #define ChApiEXPORT __declspec(dllexport)
     #define ChApiIMPORT __declspec(dllimport)
 #else
